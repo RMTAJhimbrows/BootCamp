@@ -22,7 +22,13 @@ public class Main {
         }
 
         Empleado actualizarEmpleado = empleadoController.findOne(6);
-        actualizarEmpleado.setNombre("Laura");
+        actualizarEmpleado.setNombre("Carmen");
+        actualizarEmpleado.setApellido("Perez");
+        actualizarEmpleado.setCargo("Jefe");
+        actualizarEmpleado.setSalario(23000);
+        actualizarEmpleado.setFechaInicio(LocalDate.of(2022,12,3));
+
+
         empleadoController.update(actualizarEmpleado);
 
         Integer id = 7;
