@@ -97,4 +97,20 @@ public class Empleado {
                 ", fechaInicio=" + fechaInicio +
                 '}';
     }
+
+    public String toUsuarioString(){
+        return "Nombre: " + nombre + "\n" +
+                "Apellido: " + apellido + "\n" +
+                "Cargo: " + cargo + "\n" +
+                "Salario: " + salario + " €\n" +
+                "Fecha de inicio: " + fechaInicio;
+    }
+
+    public String toAllUsersString() {
+        return "Nombre: " + nombre  +
+                " Apellido: " + apellido +
+                " Cargo: " + cargo +
+                " Salario: " + salario +
+                " Fecha de inicio: " + fechaInicio;
+    }
 }
