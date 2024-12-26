@@ -98,6 +98,12 @@ public class Empleado {
                 '}';
     }
 
+    /**
+     * Devuelve una representación del empleado orientada al usuario.
+     * Contiene solo los campos relevantes para la presentación básica del empleado.
+     *
+     * @return Cadena de texto con los datos del empleado en formato amigable para el usuario.
+     */
     public String toUsuarioString(){
         return "Nombre: " + nombre + "\n" +
                 "Apellido: " + apellido + "\n" +
@@ -106,6 +112,12 @@ public class Empleado {
                 "Fecha de inicio: " + fechaInicio;
     }
 
+    /**
+     * Devuelve una representación concisa del empleado para mostrar en listados o informes.
+     * Incluye nombre, apellido, cargo, salario y fecha de inicio en una sola línea.
+     *
+     * @return Cadena de texto con los datos clave del empleado en un formato resumido.
+     */
     public String toAllUsersString() {
         return "Nombre: " + nombre  +
                 " Apellido: " + apellido +
