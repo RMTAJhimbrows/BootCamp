@@ -14,12 +14,11 @@ public class Main {
         EmpleadoController empleadoController = new EmpleadoController();
         Scanner scanner = new Scanner(System.in);
         LocalDate fechaInicio = null;
-        boolean fechaValida = false;
-        boolean salarioValido = false;
         double salario = 0.00;
         String nombre = null;
         String apellido = null;
         String cargo = null;
+        int usuario;
         int opcion;
 
         System.out.println("==============================================");
@@ -44,57 +43,14 @@ public class Main {
 
         switch (opcion){
             case 1:
-                while (nombre == null || nombre.trim().isEmpty()) {
-                    System.out.println("Ingrese su nombre: ");
-                    nombre = scanner.nextLine();
-                    if (nombre == null || nombre.trim().isEmpty()){
-                        System.out.println("El nombre no puede ser vacio ni ocntener solo espacios. Intenete nuevamente.");
-                    }
-                }
-
-                while (apellido == null || apellido.trim().isEmpty()) {
-                    System.out.println("Ingrese su apellido: ");
-                    apellido = scanner.nextLine();
-                    if (apellido == null || apellido.trim().isEmpty()){
-                        System.out.println("El apellido no puede ser vacio ni obntener solo espacios. Intenete nuevamente.");
-                    }
-                }
-
-                while (cargo == null || cargo.trim().isEmpty()) {
-                    System.out.println("Ingrese su cargo: ");
-                    cargo = scanner.nextLine();
-                    if (cargo == null || cargo.trim().isEmpty()){
-                        System.out.println("El cargo no puede ser vacio ni ocntener solo espacios. Intenete nuevamente.");
-                    }
-                }
-
-                while (!salarioValido) {
-                    System.out.println("Ingrese su salario: ");
-                    try {
-                        salario = scanner.nextDouble();
-                        if (salario <= 0){
-                            System.out.println("El salario debe ser un numero Positivo");
-                        } else {
-                            salarioValido = true;
-                        }
-                    } catch (Exception e){
-                        System.out.println("Entrada inválida. Debe ingresar un numero para el salario");
-                        scanner.nextLine();
-                    }
-                }
+                nombre = obtenerEntradaValida(scanner, "Ingresar nombre: ");
+                apellido = obtenerEntradaValida(scanner, "Ingresar apellido: ");
+                cargo = obtenerEntradaValida(scanner, "Ingresar cargo: ");
+                salario = obtenerSalarioValido(scanner, "Ingresar Salario");
                 scanner.nextLine();
+                fechaInicio = obtenerFechaValido(scanner, "Ingrear fecha en formato YYY-MM-DD");
 
-                while (!fechaValida) {
-                    System.out.println("Ingrese fecha en formato YYYY-MM-DD");
-                    String fechaEntrada = scanner.nextLine();
 
-                    try {
-                        fechaInicio = LocalDate.parse(fechaEntrada, DateTimeFormatter.ISO_LOCAL_DATE);
-                        fechaValida = true;
-                    } catch (DateTimeParseException e){
-                        System.out.println("Formato de fecha inválido");
-                    }
-                }
                 System.out.println("================== CARGANDO ==================");
                 Empleado nuevoEmpleado = new Empleado(null, nombre, apellido, cargo, salario, fechaInicio);
                 empleadoController.create(nuevoEmpleado);
@@ -114,12 +70,21 @@ public class Main {
                 }
                 break;
             case 3:
-                Empleado actualizarEmpleado = empleadoController.findOne(6);
-                actualizarEmpleado.setNombre("Carmen");
-                actualizarEmpleado.setApellido("Perez");
-                actualizarEmpleado.setCargo("Jefe");
-                actualizarEmpleado.setSalario(23000);
-                actualizarEmpleado.setFechaInicio(LocalDate.of(2022,12,3));
+                System.out.println("Usuario a modificar");
+                usuario = scanner.nextInt();
+                Empleado actualizarEmpleado = empleadoController.findOne(usuario);
+
+                nombre = obtenerEntradaValida(scanner, "Nombre a modificar");
+                apellido = obtenerEntradaValida(scanner, "Apellido a modificar");
+                cargo = obtenerEntradaValida(scanner, "Cargo a modificar");
+                salario = obtenerSalarioValido(scanner, "Salario a modificar: ");
+                fechaInicio = obtenerFechaValido(scanner, "Fecha a modificar");
+
+                actualizarEmpleado.setNombre(nombre);
+                actualizarEmpleado.setApellido(apellido);
+                actualizarEmpleado.setCargo(cargo);
+                actualizarEmpleado.setSalario(salario);
+                actualizarEmpleado.setFechaInicio(fechaInicio);
 
                 empleadoController.update(actualizarEmpleado);
                 break;
@@ -131,29 +96,51 @@ public class Main {
                 System.out.println("Opcion Inválida");
         }
         scanner.close();
-/*
-        Empleado nuevoEmpleado = new Empleado(null, "Fulano", "Rodriguez", "Obrero de planta", 20000, LocalDate.of(1990,2,1));
-        empleadoController.create(nuevoEmpleado);
 
-        List<Empleado> todosLosEmpleados = empleadoController.findAll();
-        for (Empleado empleado : todosLosEmpleados) {
-            System.out.println(empleado);
-        }
-
-        Empleado actualizarEmpleado = empleadoController.findOne(6);
-        actualizarEmpleado.setNombre("Carmen");
-        actualizarEmpleado.setApellido("Perez");
-        actualizarEmpleado.setCargo("Jefe");
-        actualizarEmpleado.setSalario(23000);
-        actualizarEmpleado.setFechaInicio(LocalDate.of(2022,12,3));
-
-
-        empleadoController.update(actualizarEmpleado);
-
-        Integer id = 7;
-        empleadoController.delete(id);
-
-*/
     }
 
+    private static String obtenerEntradaValida(Scanner scanner, String mensaje){
+        String entrada;
+        while (true){
+            System.out.println(mensaje);
+            entrada = scanner.nextLine();
+            if (entrada != null && !entrada.trim().isEmpty() && entrada.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+")) {
+                return entrada;
+            } else {
+                System.out.println("Entrada no es válida.");
+            }
+        }
+    }
+
+    private static double obtenerSalarioValido(Scanner scanner, String mensaje){
+        double entradaSalario = 0;
+        while (true){
+            System.out.println(mensaje);
+            try {
+                entradaSalario = scanner.nextDouble();
+                if (entradaSalario > 0){
+                    return entradaSalario;
+                } else {
+                    System.out.println("El salario debe ser mayor a 0. Intente nuevamente");
+                }
+            } catch (Exception e){
+                System.out.println("Entrada inválida debe ser un numero para el salario. Intente nuevamente");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private static LocalDate obtenerFechaValido(Scanner scanner, String mensaje){
+        LocalDate fecha = null;
+        while (true){
+            System.out.println(mensaje);
+            String entradaFecha = scanner.nextLine();
+            try {
+                fecha = LocalDate.parse(entradaFecha, DateTimeFormatter.ISO_LOCAL_DATE);
+                return fecha;
+            } catch (DateTimeParseException e){
+                System.out.println("Formato de fecha inválido. Intente nuevamente.");
+            }
+        }
+    }
 }
